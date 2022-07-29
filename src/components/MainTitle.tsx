@@ -1,6 +1,7 @@
 
 export function MainTitle() {
     return (
-        <main id="cart"></main>
+        <h1>Your Cart </h1>
+
     )
 }

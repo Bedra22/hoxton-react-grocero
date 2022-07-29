@@ -1,111 +1,145 @@
+import { useState } from 'react'
 import './App.css'
 
-
-function cartitems() {
-  return state.storeItems.filter(item => item.incart > 0)
-}
-
-
-function increasestock(item) {
-  if (item.stock === 0) return
-
-  item.incart++
-  item.stock--
-}
-
-function decreasestock(item) {
-  if (item.incart > 0) {
-    item.incart--
-    item.stock++
-  }
+function getimgpath(item: any) {
+  let id = String(item.id).padStart(3, '0')
+  return `assets/icons/${id}-${item.name}.svg`
 }
 
 function App() {
+
+  const [store, setStore] = useState([
+    {
+      id: 1,
+      name: "Beetroot",
+      price: 0.50,
+      incart: 0,
+      stock: 20
+    },
+    {
+      id: 2,
+      name: "Carrot",
+      price: 0.10,
+      incart: 0,
+      stock: 20
+    },
+    {
+      id: 3,
+      name: "Apple",
+      price: 0.20,
+      incart: 0,
+      stock: 20
+    },
+    {
+      id: 4,
+      name: "Apricot",
+      price: 0.30,
+      incart: 0,
+      stock: 20
+    },
+    {
+      id: 5,
+      name: "Avocados",
+      price: 0.40,
+      incart: 0,
+      stock: 20
+    },
+    {
+      id: 6,
+      name: "Bananas",
+      price: 0.60,
+      incart: 0,
+      stock: 20
+    },
+    {
+      id: 7,
+      name: "Bellpepper",
+      price: 0.70,
+      incart: 0,
+      stock: 20
+    },
+    {
+      id: 8,
+      name: "Berry",
+      price: 0.80,
+      incart: 0,
+      stock: 20
+    },
+    {
+      id: 9,
+      name: "Blueberry",
+      price: 0.90,
+      incart: 0,
+      stock: 20
+    },
+    {
+      id: 10,
+      name: "Eggplant",
+      price: 0.10,
+      incart: 0,
+      stock: 20
+    }
+  ])
+
+
+  let ItemsInCart = store
+  ItemsInCart = ItemsInCart.filter(item => item.incart > 0)
+
+  function IncreaseAmountInCart(item) {
+
+    if (item.stock === 0) return
+
+    const StoreClone = structuredClone(store)
+
+    let bestmatch = StoreClone.find(target => target.id === item.id)
+    bestmatch.incart++
+    bestmatch.stock--
+
+    setStore(StoreClone)
+  }
+
+  function DecreaseAmountInCart(item) {
+    if (item.incart < 1) return
+
+    const StoreClone = structuredClone(store)
+
+    let bestmatch = StoreClone.find(target => target.id === item.id)
+    bestmatch.incart--
+    bestmatch.stock++
+
+    setStore(StoreClone)
+  }
+
+
+  function getTotal() {
+    let total = 0
+
+    for (let item of store) {
+      total += item.price * item.incart
+    }
+
+    return total.toFixed(2)
+  }
+
   return (
     <div className="app">
       <header id="store">
         <h1>Grocero</h1>
         <ul className="item-list store--item-list">
-          <li>
-            <div className=".store--item-icon">
-              <img src="assets/icons/001-Beetroot.svg" />
-            </div>
-            <button>
-              Add to cart (20)
-            </button>
-          </li>
-          <li>
-            <div className=".store--item-icon">
-              <img src="assets/icons/002-Carrot.svg" />
-            </div>
-            <button>
-              Add to cart (20)
-            </button>
-          </li>
-          <li>
-            <div className=".store--item-icon">
-              <img src="assets/icons/003-Apple.svg" />
-            </div>
-            <button>
-              Add to cart (20)
-            </button>
-          </li>
-          <li>
-            <div className=".store--item-icon">
-              <img src="assets/icons/004-Apricot.svg" />
-            </div>
-            <button>
-              Add to cart (20)
-            </button>
-          </li>
-          <li>
-            <div className=".store--item-icon">
-              <img src="assets\icons\005-avocado.svg" />
-            </div>
-            <button>
-              Add to cart (20)
-            </button>
-          </li>
-          <li>
-            <div className=".store--item-icon">
-              <img src="assets/icons/006-Bananas.svg" />
-            </div>
-            <button>
-              Add to cart (20)
-            </button>
-          </li>
-          <li>
-            <div className=".store--item-icon">
-              <img src="assets/icons/007-Bellpepper.svg" />
-            </div>
-            <button>
-              Add to cart (20)
-            </button>
-          </li>
-          <li>
-            <div className=".store--item-icon">
-              <img src="assets/icons/008-Berry.svg" />
-            </div>
-            <button>
-              Add to cart (20)
-            </button>
-          </li>
-          <li>
-            <div className=".store--item-icon">
-              <img src="assets/icons/009-Blueberry.svg" />
-            </div>
-            <button>
-              Add to cart (20)
-            </button>
-          </li>
-          <li>
-            <div className=".store--item-icon">
-              <img src="assets/icons/010-Eggplant.svg" />
-            </div>
-            <button>
-              Add to cart (20)
-            </button>
-          </li>
+          {
+            store.map(item => (<li>
+              <div className=".store--item-icon">
+                <img src={getimgpath(item)} />
+              </div>
+              <button
+                onClick={function () {
+                  IncreaseAmountInCart(item)
+                }}
+              >
+                Add to cart ({item.stock})
+              </button>
+            </li>))
+          }
         </ul>
       </header>
 
@@ -115,156 +149,35 @@ function App() {
         <div className="cart--item-list-container">
 
           <ul className="item-list cart--item-list">
-            <li>
-              <img className="cart--item-icon" src="assets/icons/001-Beetroot.svg" alt="Beetroot" />
-              <p>
-                Beetroot
-              </p>
-              <button className="quantity-btn remove-btn center">
-                -
-              </button>
-              <span className="quantity-text center">
-                0
-              </span>
-              <button className="quantity-btn add-btn center">
-                +
-              </button>
-            </li>
-            <li>
-              <img className="cart--item-icon" src="assets/icons/002-Carrot.svg" alt="Carrot" />
-              <p>
-                Carrot
-              </p>
-              <button className="quantity-btn remove-btn center">
-                -
-              </button>
-              <span className="quantity-text center">
-                0
-              </span>
-              <button className="quantity-btn add-btn center">
-                +
-              </button>
-            </li>
-            <li>
-              <img className="cart--item-icon" src="assets/icons/003-Apple.svg" alt="Apple" />
-              <p>
-                Apple
-              </p>
-              <button className="quantity-btn remove-btn center">
-                -
-              </button>
-              <span className="quantity-text center">
-                0
-              </span>
-              <button className="quantity-btn add-btn center">
-                +
-              </button>
-            </li>
-            <li>
-              <img className="cart--item-icon" src="assets/icons/004-Apricot.svg" alt="Apricot" />
-              <p>
-                Apricot
-              </p>
-              <button className="quantity-btn remove-btn center">
-                -
-              </button>
-              <span className="quantity-text center">
-                0
-              </span>
-              <button className="quantity-btn add-btn center">
-                +
-              </button>
-            </li>
-            <li>
-              <img className="cart--item-icon" src="assets/icons/005-Avocados.svg" alt="Avocados" />
-              <p>
-                Avocados
-              </p>
-              <button className="quantity-btn remove-btn center">
-                -
-              </button>
-              <span className="quantity-text center">
-                0
-              </span>
-              <button className="quantity-btn add-btn center">
-                +
-              </button>
-            </li>
-            <li>
-              <img className="cart--item-icon" src="assets/icons/006-Bananas.svg" alt="Bananas" />
-              <p>
-                Bananas
-              </p>
-              <button className="quantity-btn remove-btn center">
-                -
-              </button>
-              <span className="quantity-text center">
-                0
-              </span>
-              <button className="quantity-btn add-btn center">
-                +
-              </button>
-            </li>
-            <li>
-              <img className="cart--item-icon" src="assets/icons/007-Bellpepper.svg" alt="Bellpepper" />
-              <p>
-                Bellpepper
-              </p>
-              <button className="quantity-btn remove-btn center">
-                -
-              </button>
-              <span className="quantity-text center">
-                0
-              </span>
-              <button className="quantity-btn add-btn center">
-                +
-              </button>
-            </li>
-            <li>
-              <img className="cart--item-icon" src="assets/icons/008-Berry.svg" alt="Berry" />
-              <p>
-                Berry
-              </p>
-              <button className="quantity-btn remove-btn center">
-                -
-              </button>
-              <span className="quantity-text center">
-                0
-              </span>
-              <button className="quantity-btn add-btn center">
-                +
-              </button>
-            </li>
-            <li>
-              <img className="cart--item-icon" src="assets/icons/009-Blueberry.svg" alt="Blueberry" />
-              <p>
-                Blueberry
-              </p>
-              <button className="quantity-btn remove-btn center">
-                -
-              </button>
-              <span className="quantity-text center">
-                0
-              </span>
-              <button className="quantity-btn add-btn center">
-                +
-              </button>
-            </li>
-            <li>
-              <img className="cart--item-icon" src="assets/icons/010-Eggplant.svg" alt="Eggplant" />
-              <p>
-                Eggplant
-              </p>
-              <button className="quantity-btn remove-btn center">
-                -
-              </button>
-              <span className="quantity-text center">
-                0
-              </span>
-              <button className="quantity-btn add-btn center">
-                +
-              </button>
-            </li>
+            {
+              ItemsInCart.map(item => (
+                <li>
+                  <img className="cart--item-icon"
+                    src={getimgpath(item)}
+                    alt={item.name} />
+                  <p>
+                    {item.name}
+                  </p>
+                  <button className="quantity-btn remove-btn center"
+                    onClick={function () {
+                      DecreaseAmountInCart(item)
+                    }}
+                  >
+                    -
+                  </button>
+                  <span className="quantity-text center">
+                    {item.incart}
+                  </span>
+                  <button className="quantity-btn add-btn center"
+                    onClick={function () {
+                      IncreaseAmountInCart(item)
+                    }}>
+                    +
+                  </button>
+                </li>
+              ))
+            }
+
           </ul>
 
 
@@ -278,10 +191,12 @@ function App() {
           </div>
 
           <div>
-            <span className="total-number">£0.00</span>
+            <span className="total-number">£{getTotal()}</span>
           </div>
         </div>
       </main>
+
+
       <script type="module" src="/src/main.ts?t=1659010339317"></script>
 
 
@@ -290,3 +205,4 @@ function App() {
 }
 
 export default App
+

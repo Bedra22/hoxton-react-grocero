@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import './App.css'
+import { Header } from './components/Header'
+import { Main } from './components/Main'
 
 function getimgpath(item: any) {
   let id = String(item.id).padStart(3, '0')
@@ -7,6 +9,14 @@ function getimgpath(item: any) {
 }
 
 function App() {
+
+  type StoreItems = {
+    id: number;
+    name: string;
+    price: number;
+    incart: number;
+    stock: number;
+  }
 
   const [store, setStore] = useState([
     {
@@ -123,78 +133,15 @@ function App() {
 
   return (
     <div className="app">
-      <header id="store">
-        <h1>Grocero</h1>
-        <ul className="item-list store--item-list">
-          {
-            store.map(item => (<li>
-              <div className=".store--item-icon">
-                <img src={getimgpath(item)} />
-              </div>
-              <button
-                onClick={function () {
-                  IncreaseAmountInCart(item)
-                }}
-              >
-                Add to cart ({item.stock})
-              </button>
-            </li>))
-          }
-        </ul>
-      </header>
+      <Header store={store} getimgpath={getimgpath} IncreaseAmountInCart={IncreaseAmountInCart} item={[]} />
 
-      <main id="cart">
-        <h2>Your Cart</h2>
-
-        <div className="cart--item-list-container">
-
-          <ul className="item-list cart--item-list">
-            {
-              ItemsInCart.map(item => (
-                <li>
-                  <img className="cart--item-icon"
-                    src={getimgpath(item)}
-                    alt={item.name} />
-                  <p>
-                    {item.name}
-                  </p>
-                  <button className="quantity-btn remove-btn center"
-                    onClick={function () {
-                      DecreaseAmountInCart(item)
-                    }}
-                  >
-                    -
-                  </button>
-                  <span className="quantity-text center">
-                    {item.incart}
-                  </span>
-                  <button className="quantity-btn add-btn center"
-                    onClick={function () {
-                      IncreaseAmountInCart(item)
-                    }}>
-                    +
-                  </button>
-                </li>
-              ))
-            }
-
-          </ul>
-
-
-
-
-        </div>
-
-        <div className="total-section">
-          <div>
-            <h3>Total</h3>
-          </div>
-
-          <div>
-            <span className="total-number">£{getTotal()}</span>
-          </div>
-        </div>
-      </main>
+      <Main
+        ItemsInCart={ItemsInCart}
+        getimgpath={getimgpath}
+        DecreaseAmountInCart={DecreaseAmountInCart}
+        IncreaseAmountInCart={IncreaseAmountInCart}
+        getTotal={getTotal}
+        store={[]} item={[]} />
 
 
       <script type="module" src="/src/main.ts?t=1659010339317"></script>
